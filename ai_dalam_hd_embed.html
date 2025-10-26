@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peran AI dalam Humaniora Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: Adapted for embeddable view. Keeps the core narrative flow: Introduction, Close vs. Distant Reading comparison, AI Toolkit (charts), Human Validation Flowchart, and Conclusion. The layout is optimized for a single, focused column ideal for LMS embedding. -->
+    <!-- Visualization & Content Choices: Maintained all Chart.js/Canvas plots (Donut, Bar, Horizontal Bar) and the structured HTML flowchart, strictly adhering to NO SVG and NO Mermaid JS constraints. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+            padding-bottom: 3rem; 
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px; 
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Reduced height for better embeddability */
+            max-height: 350px;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #00A6FB, #A60067);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .flowchart-step {
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1);
+            flex-grow: 1;
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            color: #00A6FB;
+            transform: rotate(90deg);
+            margin: 0.5rem 0;
+        }
+        @media (min-width: 768px) {
+            .flowchart-arrow {
+                transform: rotate(0deg);
+                margin: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6">
+
+        <!-- Section 1: Title and Introduction -->
+        <section class="text-center py-8 bg-white rounded-lg shadow-md mb-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold mb-2">Peran AI dalam Humaniora Digital</h1>
+            <h2 class="text-xl md:text-2xl font-semibold gradient-text">Meningkatkan Analisis Teks Agama</h2>
+            <p class="max-w-xl mx-auto text-sm text-slate-600 mt-4 px-4">
+                Infografis ini merangkum bagaimana kecerdasan buatan menjadi alat esensial, bukan pengganti, dalam analisis teks humaniora dan studi tafsir.
+            </p>
+        </section>
+
+        <!-- Section 2: Two Ways of Knowing -->
+        <section class="py-6">
+            <h2 class="text-2xl font-bold text-center mb-6">Dua Cara Membaca</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="card p-5 border-t-4 border-[#00A6FB]">
+                    <div class="text-4xl mb-3">🧠</div>
+                    <h3 class="text-xl font-bold mb-2">Close Reading (Manusia)</h3>
+                    <p class="text-sm text-slate-600">Analisis cermat pada teks tunggal, fokus pada interpretasi, nuansa, dan pemahaman kontekstual.</p>
+                </div>
+                <div class="card p-5 border-t-4 border-[#A60067]">
+                    <div class="text-4xl mb-3">🔬</div>
+                    <h3 class="text-xl font-bold mb-2">Distant Reading (Mesin)</h3>
+                    <p class="text-sm text-slate-600">Analisis komputasional untuk menemukan pola, hubungan, dan tema tersembunyi dalam korpus teks raksasa.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The AI Toolkit - Charts -->
+        <section class="py-8 bg-slate-100 rounded-xl mt-8 p-6">
+            <h2 class="text-2xl font-bold text-center mb-10">AI Toolkit: Visualisasi Data Tafsir</h2>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Topic Modeling -->
+                <div class="card p-4">
+                    <h3 class="text-lg font-bold mb-2 text-center">Analisis Tematik (Topic Modeling)</h3>
+                    <p class="text-xs text-slate-600 mb-4 text-center">Menemukan topik dominan dalam korpus 50+ kitab tafsir secara otomatis (Contoh data simulasi).</p>
+                    <div class="chart-container">
+                        <canvas id="topicModelingChart"></canvas>
+                    </div>
+                </div>
+                <!-- Text Classification -->
+                <div class="card p-4">
+                    <h3 class="text-lg font-bold mb-2 text-center">Klasifikasi Ayat (Supervised Learning)</h3>
+                    <p class="text-xs text-slate-600 mb-4 text-center">Mengelompokkan ayat-ayat ke kategori Hukum, Akidah, atau Moral untuk perbandingan historis.</p>
+                    <div class="chart-container">
+                        <canvas id="textClassificationChart"></canvas>
+                    </div>
+                </div>
+                 <!-- NER -->
+                <div class="card p-4 lg:col-span-2 max-w-xl mx-auto">
+                    <h3 class="text-lg font-bold mb-2 text-center">Frekuensi Rujukan Perawi (NER)</h3>
+                    <p class="text-xs text-slate-600 mb-4 text-center">Mengidentifikasi nama perawi (*sanad*) dalam teks untuk memetakan rantai transmisi ilmu.</p>
+                    <div class="chart-container h-[250px] max-h-[300px]">
+                        <canvas id="nerChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Human Validation Flowchart -->
+        <section class="py-10">
+            <h2 class="text-2xl font-bold text-center mb-8">Proses Validasi Manusia (Sanad)</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
+                <div class="flowchart-step border-l-4 border-[#A60067] text-sm">AI: Hipotesis Temuan</div>
+                <div class="flowchart-arrow">➜</div>
+                <div class="flowchart-step text-sm">Mufasir: Close Reading</div>
+                <div class="flowchart-arrow">➜</div>
+                <div class="flowchart-step border-l-4 border-[#00A6FB] text-sm">Ahli: Penilaian Kredibilitas (*Tsiqah*)</div>
+            </div>
+        </section>
+
+        <!-- Section 5: Conclusion -->
+        <section class="text-center py-8 mt-8 bg-gradient-to-r from-[#00A6FB] to-[#A60067] rounded-xl text-white shadow-lg">
+            <h2 class="text-xl md:text-2xl font-bold mb-3">Kolaborasi untuk Kearifan</h2>
+            <p class="max-w-3xl mx-auto text-sm leading-relaxed px-4">
+                Masa depan Humaniora Digital adalah simbiotik: AI menyediakan kecepatan dan skala, sementara kearifan manusia memberikan makna, konteks etika, dan validasi otoritatif.
+            </p>
+        </section>
+    </div>
+
+<script>
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+            return label.join(' ');
+        }
+        return label;
+    };
+
+    const wrapLabel = (label) => {
+        if (label.length <= 16) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        for (const word of words) {
+            if ((currentLine + word).length > 16) {
+                lines.push(currentLine.trim());
+                currentLine = '';
+            }
+            currentLine += word + ' ';
+        }
+        lines.push(currentLine.trim());
+        return lines;
+    };
+
+    // Chart 1: Topic Modeling
+    const ctx1 = document.getElementById('topicModelingChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ['Hukum & Fiqh', 'Kisah Para Nabi', 'Akidah & Tauhid', 'Akhlak & Moral'],
+            datasets: [{
+                label: 'Distribusi Topik',
+                data: [40, 25, 20, 15],
+                backgroundColor: ['#00A6FB', '#FFBC00', '#A60067', '#FF4F79'],
+                borderColor: '#f0f4f8',
+                borderWidth: 4,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { callbacks: { title: tooltipTitleCallback } }
+            }
+        }
+    });
+
+    // Chart 2: Text Classification
+    const ctx2 = document.getElementById('textClassificationChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Akidah', 'Hukum', 'Moral', 'Sejarah'],
+            datasets: [{
+                label: 'Jumlah Ayat per Kategori',
+                data: [1250, 900, 1500, 1100],
+                backgroundColor: '#FF4F79',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { maxTicksLimit: 5 } } },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { title: tooltipTitleCallback } }
+            }
+        }
+    });
+
+    // Chart 3: NER for Sanad
+    const ctx3 = document.getElementById('nerChart').getContext('2d');
+    const nerLabels = [
+        'Ibnu Katsir', 
+        'Imam At-Tabari', 
+        'Al-Qurtubi', 
+        'Fakhruddin ar-Razi yang Agung', 
+        'Az-Zamakhshari'
+    ];
+    new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: nerLabels.map(wrapLabel),
+            datasets: [{
+                label: 'Frekuensi Rujukan',
+                data: [450, 380, 320, 250, 180],
+                backgroundColor: '#FFBC00',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { x: { beginAtZero: true, ticks: { maxTicksLimit: 5 } } },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { title: tooltipTitleCallback } }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
