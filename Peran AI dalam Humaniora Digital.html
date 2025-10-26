@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI untuk Humaniora: Alat Bantu Analisis Tafsir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral with Teal Accent -->
+    <!-- Application Structure Plan: A thematic, single-page scrolling experience with a fixed side navigation for easy access to key sections. The structure prioritizes user understanding by starting with foundational concepts (Close vs. Distant Reading), moving to practical applications (an interactive AI techniques dashboard), addressing ethical challenges, and concluding with the core thesis of human-machine collaboration. This non-linear but guided structure is chosen over the report's linear chapter format to create a more engaging and exploratory digital experience. -->
+    <!-- Visualization & Content Choices: The core of the app is an interactive dashboard where users select an AI technique. Goal: Compare & Inform. Method: Buttons trigger JS to update a Chart.js canvas and related text blocks. Viz Choices: Donut chart for Topic Modeling (parts-of-whole), Bar chart for Text Classification (category comparison), and Horizontal Bar for NER (frequency comparison). Justification: These charts provide clear, instant visual feedback for the abstract concepts. This interactive element directly simulates the 'distant reading' output, which is then contextualized by 'close reading' explanations, reinforcing the report's main argument. Library: Chart.js on Canvas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF5;
+            color: #3D405B;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            padding: 1rem 0.5rem;
+            border-right: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: #E0ECEB;
+            border-right-color: #3D405B;
+            color: #3D405B;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .btn-primary {
+            background-color: #81B29A;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #6A9C89;
+        }
+        .btn-secondary {
+            background-color: #F2CC8F;
+            color: #3D405B;
+            transition: background-color 0.3s ease;
+        }
+        .btn-secondary.active {
+            background-color: #3D405B;
+            color: white;
+            font-weight: 600;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="flex">
+
+    <nav class="fixed top-0 left-0 h-screen bg-white shadow-md flex flex-col items-center justify-center space-y-4 z-10">
+        <a href="#hero" class="nav-link active font-semibold text-gray-500" data-section="hero">Pengantar</a>
+        <a href="#konsep" class="nav-link font-semibold text-gray-500" data-section="konsep">Konsep Kunci</a>
+        <a href="#aplikasi" class="nav-link font-semibold text-gray-500" data-section="aplikasi">Aplikasi AI</a>
+        <a href="#tantangan" class="nav-link font-semibold text-gray-500" data-section="tantangan">Tantangan & Etika</a>
+        <a href="#kesimpulan" class="nav-link font-semibold text-gray-500" data-section="kesimpulan">Kesimpulan</a>
+    </nav>
+
+    <main class="ml-16 w-full overflow-y-auto">
+        <section id="hero" class="min-h-screen flex items-center justify-center p-4 md:p-8">
+            <div class="text-center max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4">AI untuk Humaniora</h1>
+                <p class="text-xl md:text-2xl text-[#81B29A] font-semibold mb-6">Menjelajahi Peran AI dalam Digitalisasi Tafsir</p>
+                <div class="w-24 h-1 bg-[#F2CC8F] mx-auto mb-8"></div>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Aplikasi ini mengelaborasi bagaimana Kecerdasan Buatan (AI), khususnya Machine Learning dan NLP, berfungsi sebagai <strong class="text-[#3D405B]">alat bantu analisis</strong> yang kuat dalam studi tafsir, bukan sebagai pengganti peran krusial mufasir. Mari kita jelajahi simbiosis antara mesin dan manusia dalam menggali kekayaan khazanah intelektual Islam.
+                </p>
+            </div>
+        </section>
+
+        <section id="konsep" class="min-h-screen bg-[#E0ECEB] py-20 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Konsep Kunci: Dua Cara Membaca</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">Menurut Jänicke et al. (2015), peran AI dalam humaniora dapat dipahami melalui dua pendekatan pembacaan yang berbeda namun saling melengkapi.</p>
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div class="card p-8 text-center">
+                        <div class="text-5xl mb-4">📖</div>
+                        <h3 class="text-2xl font-bold mb-3 text-[#3D405B]">Close Reading (Membaca Mendalam)</h3>
+                        <p class="text-gray-600">Pendekatan tradisional humaniora yang melibatkan analisis cermat, mendalam, dan holistik terhadap sebuah teks. Ini adalah domain manusia, menekankan pada interpretasi konteks linguistik, historis, dan spiritual.</p>
+                        <p class="mt-4 font-semibold text-sm text-[#81B29A]">Peran: Manusia (Mufasir)</p>
+                    </div>
+                    <div class="card p-8 text-center">
+                         <div class="text-5xl mb-4">🔬</div>
+                        <h3 class="text-2xl font-bold mb-3 text-[#3D405B]">Distant Reading (Membaca Jauh)</h3>
+                        <p class="text-gray-600">Metode komputasional yang menggunakan AI untuk menganalisis pola, tema, dan hubungan tersembunyi dalam korpus teks yang sangat besar. AI menemukan pola, manusia memberikan makna.</p>
+                        <p class="mt-4 font-semibold text-sm text-[#81B29A]">Peran: Mesin (AI) + Manusia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="aplikasi" class="min-h-screen py-20 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Aplikasi Praktis AI dalam Tafsir</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">Jelajahi bagaimana berbagai teknik AI dapat diterapkan untuk melakukan *distant reading* pada literatur tafsir. Pilih sebuah teknik untuk melihat simulasi hasil dan memahami bagaimana manusia dan mesin berkolaborasi.</p>
+                
+                <div class="text-center mb-8 space-x-2 space-y-2">
+                    <button class="btn-secondary px-4 py-2 rounded-full font-semibold" data-technique="topicModeling">Analisis Tematik</button>
+                    <button class="btn-secondary px-4 py-2 rounded-full font-semibold" data-technique="textClassification">Klasifikasi Teks</button>
+                    <button class="btn-secondary px-4 py-2 rounded-full font-semibold" data-technique="ner">Pelacakan Sanad (NER)</button>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-8 items-center card p-8">
+                    <div>
+                        <h3 id="technique-title" class="text-2xl font-bold text-[#3D405B] mb-3"></h3>
+                        <p id="technique-description" class="text-gray-600 mb-6"></p>
+                        
+                        <div class="bg-[#E0ECEB] p-4 rounded-lg">
+                            <h4 class="font-bold text-lg text-[#3D405B]">🧠 Peran Manusia (Close Reading)</h4>
+                            <p id="human-role" class="text-gray-700 mt-2"></p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="aiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tantangan" class="min-h-screen bg-[#FDFBF5] py-20 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Tantangan Epistemik & Etika</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">Integrasi AI bukan tanpa tantangan. Diperlukan kerangka kerja yang kuat untuk memastikan teknologi digunakan secara bertanggung jawab, menghormati tradisi keilmuan Islam.</p>
+                
+                <div class="space-y-6">
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl text-[#D9534F] mb-2">🚨 Dilema Otoritas dan Validitas</h3>
+                        <p class="text-gray-600">AI tidak dapat menilai keandalan (*tsiqah*) perawi atau otoritas spiritual seorang mufasir. Sistem *sanad* yang berbasis pada integritas manusia tetap menjadi pilar utama. Klaim "objektivitas" AI harus dipahami sebagai tujuan teknis, bukan pengganti otoritas keilmuan.</p>
+                    </div>
+                     <div class="card p-6">
+                        <h3 class="font-bold text-xl text-[#F2CC8F] mb-2">🌪️ Risiko Dekontekstualisasi</h3>
+                        <p class="text-gray-600">AI cenderung literal dan dapat mengabaikan konteks sosial, historis, dan spiritual. Tanpa bimbingan manusia, hal ini dapat mengarah pada pemahaman yang dangkal atau bahkan keliru, serta menciptakan "ruang gema religius" yang sempit.</p>
+                    </div>
+                     <div class="card p-6">
+                        <h3 class="font-bold text-xl text-[#81B29A] mb-2">🛡️ Etika dan Bias Algoritma</h3>
+                        <p class="text-gray-600">Model AI dapat mereproduksi bias yang ada dalam data latihannya. Diperlukan kolaborasi interdisipliner untuk memastikan data yang digunakan otoritatif, sensitif terhadap nilai-nilai Islam, dan tidak menghasilkan pemahaman yang menyimpang.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kesimpulan" class="min-h-screen bg-[#3D405B] text-white flex items-center justify-center py-20 px-4 md:px-8">
+            <div class="text-center max-w-4xl mx-auto">
+                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Kesimpulan: Menuju Masa Depan Kolaboratif</h2>
+                 <div class="w-24 h-1 bg-[#F2CC8F] mx-auto mb-8"></div>
+                 <p class="text-lg text-gray-200 leading-relaxed mb-6">
+                    AI bukanlah pengganti, melainkan "perluasan alami dari pikiran yang fleksibel". Dalam digitalisasi tafsir, model terbaik adalah **model simbiotik** yang menggabungkan kekuatan analitis AI untuk *distant reading* dengan kedalaman, kebijaksanaan, dan otoritas spiritual manusia dalam *close reading*.
+                 </p>
+                 <p class="text-lg text-gray-200 leading-relaxed">
+                    Dengan kolaborasi interdisipliner yang erat, teknologi dapat melayani tradisi keilmuan, memperkaya analisis, dan membuka cakrawala baru dalam memahami Al-Qur'an, tanpa mengorbankan esensi spiritual dan intelektual yang telah diwariskan selama berabad-abad.
+                 </p>
+            </div>
+        </section>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav a');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === entry.target.id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    const techniqueData = {
+        topicModeling: {
+            title: 'Analisis Tematik (Topic Modeling)',
+            description: 'Teknik ini secara otomatis menemukan tema-tema atau topik-topik utama yang tersembunyi dalam ribuan halaman teks tafsir. AI mengelompokkan kata-kata yang sering muncul bersama untuk membentuk sebuah "topik".',
+            humanRole: 'Mufasir menganalisis topik yang ditemukan AI, memberikan nama yang bermakna, menafsirkan mengapa topik tersebut dominan, dan menghubungkannya dengan konteks historis atau teologis yang lebih luas.',
+            chart: {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hukum & Fiqh', 'Kisah Para Nabi', 'Akidah & Tauhid', 'Akhlak & Moral', 'Doa & Dzikir'],
+                    datasets: [{
+                        label: 'Distribusi Topik',
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: ['#3D405B', '#81B29A', '#F2CC8F', '#E07A5F', '#BDB2FF'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw}%` } }
+                    }
+                }
+            }
+        },
+        textClassification: {
+            title: 'Klasifikasi Teks (Text Classification)',
+            description: 'Dengan teknik ini, AI dilatih untuk mengklasifikasikan setiap ayat atau bagian tafsir ke dalam kategori yang telah ditentukan sebelumnya oleh manusia, seperti "Hukum," "Sejarah," atau "Akidah".',
+            humanRole: 'Para ahli mendefinisikan kategori-kategori yang relevan dan menyediakan data pelatihan yang akurat. Setelah AI melakukan klasifikasi massal, manusia memverifikasi hasilnya dan menggunakan data terstruktur ini untuk analisis perbandingan yang lebih efisien.',
+            chart: {
+                type: 'bar',
+                data: {
+                    labels: ['Akidah', 'Hukum', 'Moral', 'Sejarah', 'Sains'],
+                    datasets: [{
+                        label: 'Jumlah Ayat per Kategori',
+                        data: [1200, 850, 1500, 950, 300],
+                        backgroundColor: '#81B29A'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            }
+        },
+        ner: {
+            title: 'Pelacakan Sanad (Named Entity Recognition)',
+            description: 'NER adalah teknik untuk mengidentifikasi entitas penting seperti nama orang, tempat, dan organisasi dari dalam teks. Dalam konteks tafsir, ini digunakan untuk mengekstrak nama-nama ulama dan perawi untuk memetakan rantai transmisi ilmu (*sanad*).',
+            humanRole: 'AI secara efisien memetakan jaringan sanad dari ribuan teks. Namun, Mufasir atau Muhaddits-lah yang melakukan tugas krusial *al-jarh wa al-ta’dil*, yaitu menilai kredibilitas dan keandalan (*tsiqah*) setiap individu dalam rantai sanad tersebut.',
+            chart: {
+                type: 'bar',
+                data: {
+                    labels: ['Ibnu Katsir', 'At-Tabari', 'Al-Qurtubi', 'Fakhruddin ar-Razi', 'Az-Zamakhshari'],
+                    datasets: [{
+                        label: 'Frekuensi Rujukan dalam Korpus',
+                        data: [450, 380, 320, 250, 180],
+                        backgroundColor: '#F2CC8F'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Frekuensi Penyebutan Mufasir' }
+                    }
+                }
+            }
+        }
+    };
+
+    const techniqueButtons = document.querySelectorAll('[data-technique]');
+    const titleEl = document.getElementById('technique-title');
+    const descriptionEl = document.getElementById('technique-description');
+    const humanRoleEl = document.getElementById('human-role');
+    const ctx = document.getElementById('aiChart').getContext('2d');
+    let myChart;
+
+    function updateContent(techniqueKey) {
+        const data = techniqueData[techniqueKey];
+        if (!data) return;
+
+        titleEl.textContent = data.title;
+        descriptionEl.textContent = data.description;
+        humanRoleEl.textContent = data.humanRole;
+
+        if (myChart) {
+            myChart.destroy();
+        }
+        myChart = new Chart(ctx, {
+            type: data.chart.type,
+            data: data.chart.data,
+            options: data.chart.options
+        });
+
+        techniqueButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.technique === techniqueKey) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    techniqueButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            updateContent(button.dataset.technique);
+        });
+    });
+
+    updateContent('topicModeling');
+});
+</script>
+</body>
+</html>
